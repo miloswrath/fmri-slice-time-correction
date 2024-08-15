@@ -3,23 +3,21 @@ import os
 import json
 
 
+# This file creates a list of all json files in the BIDS directory that need to be reran through dcm2niix and then finds their appropriate dicom folders in the sourcedata directory
+# It then runs dcm2niix on each dicom folder and saves the output to the appropriate BIDS directory
+# It then copies all json files to a new directory and removes them from the BIDS directory
+# This script will add an 'a' to the end of the json file name, use replace.py to remove the 'a' from the end of the json file name
 
 
-BIDS_DIR = '/Shared/vosslabhpc/Projects/BikeExtend/3-Experiment/2-Data/BIDS'
-SOURCE_DIR = '/Shared/vosslabhpc/Projects/BikeExtend/3-Experiment/2-Data/BIDS/sourcedata'
-bad_subs = ['sub-2002']
-'''
-txt = open('/Shared/vosslabhpc/Projects/BikeExtend/3-Experiment/2-Data/BIDS/derivatives/Zak/code/json_qc_s-24/bad_subs.txt', 'r')
+BIDS_DIR = 'path/to/BIDS'
+SOURCE_DIR = 'path/to/sourcedata'
+NEW_JSON_DIR = '/path/to/location/for/archived/jsons'
+bad_subs = ['']
+
+txt = open('path/to/sub/list', 'r')
 bad_subs = txt.read().splitlines()
 txt.close()
-'''
 
-
-
-
-
-BIDS_DIR = '/Shared/vosslabhpc/Projects/BikeExtend/3-Experiment/2-Data/BIDS'
-SOURCE_DIR = '/Shared/vosslabhpc/Projects/BikeExtend/3-Experiment/2-Data/BIDS/sourcedata'
 
 # for all subjects in bad_subs, enter the following directories and store the path to all json files
 # in each directory, enter either func or dwi folders to look for jsons
@@ -50,7 +48,7 @@ for sub in bad_subs:
 
 # In SOURCE_DIR, go through all directories that start with subs in bad_subs
 # in each directory, if has ses-day1pre, scan the following directory /scans and save path for folders that start with 4,5,6,7
-#if directory has ses-day2pre, scan the following directory /scans and save path for folders that start with 4,5,6,7
+# if directory has ses-day2pre, scan the following directory /scans and save path for folders that start with 4,5,6,7
 # if directory has ses-day1post or day2post, scan the following directory /scans and save path for folders that start with 4,5,6
 # if directory has ses-post, scan the following directory /scans and save path for folders that start with 4,5,6,7,10
 
@@ -88,6 +86,7 @@ for sub in bad_subs:
 dicoms = []
 for f in folders:
     dicoms.append(os.path.join(f, 'resources/DICOM/files'))
+
 
 
 
@@ -153,7 +152,7 @@ for i in range(len(dicoms)):
 
 
 # copy jsons from jsons into new directory with subject name as the directory name 
-NEW_JSON_DIR = '/Shared/vosslabhpc/Projects/BikeExtend/3-Experiment/2-Data/BIDS/derivatives/Zak/code/json_qc_s-24'
+
 for j in jsons:
     sub = j.split('/')[8]
     new_dir = os.path.join(NEW_JSON_DIR, sub)
